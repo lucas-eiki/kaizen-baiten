@@ -1,5 +1,6 @@
 package io.github.lucas_eiki.kaizen_baiten_api.usuario.model;
 
+import io.github.lucas_eiki.kaizen_baiten_api.cargo.model.Cargo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
