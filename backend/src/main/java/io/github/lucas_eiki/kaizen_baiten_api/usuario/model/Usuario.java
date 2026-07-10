@@ -46,7 +46,7 @@ public class Usuario {
 
     private LocalDateTime primeiroAcessoEm;
 
-    @NotNull
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo cargo;
 }
