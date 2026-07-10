@@ -19,7 +19,7 @@ public class Permissao {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String nome;
+    private NomePermissao nome;
 
     @Column(columnDefinition = "TEXT")
     private String descricao;
