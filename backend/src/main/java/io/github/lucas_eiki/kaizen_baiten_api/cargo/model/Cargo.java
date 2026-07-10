@@ -21,7 +21,7 @@ public class Cargo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String nome;
 
     @Column(columnDefinition = "TEXT")
