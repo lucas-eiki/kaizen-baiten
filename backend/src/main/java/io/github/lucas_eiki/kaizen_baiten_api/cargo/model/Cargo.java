@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "cargo")
 @Getter
@@ -25,4 +27,7 @@ public class Cargo {
 
     @Column(columnDefinition = "TEXT")
     private String descricao;
+
+    @OneToMany(mappedBy = "cargo")
+    private List<CargoPermissao> permissoes;
 }
