@@ -1,5 +1,6 @@
 package io.github.lucas_eiki.kaizen_baiten_api.cargo.model;
 
+import io.github.lucas_eiki.kaizen_baiten_api.permissao.model.Permissao;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
