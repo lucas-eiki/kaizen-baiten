@@ -3,6 +3,8 @@ package io.github.lucas_eiki.kaizen_baiten_api.auth.service;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.DadosToken;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.LoginRequest;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.LoginResponse;
+import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.ContaDesativadaException;
+import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.ContaNaoAtivadaException;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.model.Usuario;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,21 +23,33 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
-        var usuario = autenticarUsuario(request);
+        try {
+            var usuario = autenticarUsuario(request);
 
-        var dadosToken = criarDadosToken(usuario);
+            var dadosToken = criarDadosToken(usuario);
 
-        String token = jwtService.gerarToken(dadosToken);
+            String token = jwtService.gerarToken(dadosToken);
 
-        return new LoginResponse(token);
+            return new LoginResponse(token);
+        } catch (ContaNaoAtivadaException | ContaDesativadaException e) {
+            throw new BadCredentialsException("Usuário ou senha inválidos", e);
+        }
     }
 
     private Usuario autenticarUsuario(LoginRequest request) {
         var usuario = usuarioRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BadCredentialsException("Usuário ou senha inválidos"));
 
-        if(!passwordEncoder.matches(request.senha(), usuario.getSenhaHash())) {
+        if (!passwordEncoder.matches(request.senha(), usuario.getSenhaHash())) {
             throw new BadCredentialsException("Usuário ou senha inválidos");
+        }
+
+        if (usuario.getSenhaHash() == null || usuario.getAtivadoEm() == null) {
+            throw new ContaNaoAtivadaException();
+        }
+
+        if (usuario.getDeletadoEm() != null) {
+            throw new ContaDesativadaException();
         }
 
         return usuario;
