@@ -19,7 +19,7 @@ public class Permissao {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true, nullable = false)
+    @Column(columnDefinition = "VARCHAR(255)", unique = true, nullable = false)
     private NomePermissao nome;
 
     @Column(columnDefinition = "TEXT")

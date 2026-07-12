@@ -25,7 +25,7 @@ public class Token {
     private String tokenHash;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private TipoToken tipo;
 
     @Column(nullable = false)
