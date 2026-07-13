@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(
@@ -40,5 +40,5 @@ public class CargoPermissao {
 
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime criadoEm;
+    private Instant criadoEm;
 }

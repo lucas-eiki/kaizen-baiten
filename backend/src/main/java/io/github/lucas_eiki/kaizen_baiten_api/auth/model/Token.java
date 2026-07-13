@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "token")
@@ -29,9 +29,9 @@ public class Token {
     private TipoToken tipo;
 
     @Column(nullable = false)
-    private LocalDateTime expiraEm;
+    private Instant expiraEm;
 
-    private LocalDateTime utilizadoEm;
+    private Instant utilizadoEm;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)

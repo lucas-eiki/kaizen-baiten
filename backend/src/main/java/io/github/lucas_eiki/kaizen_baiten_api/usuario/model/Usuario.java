@@ -2,16 +2,13 @@ package io.github.lucas_eiki.kaizen_baiten_api.usuario.model;
 
 import io.github.lucas_eiki.kaizen_baiten_api.cargo.model.Cargo;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "usuario")
@@ -35,13 +32,13 @@ public class Usuario {
 
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime criadoEm;
+    private Instant criadoEm;
 
-    private LocalDateTime deletadoEm;
+    private Instant deletadoEm;
 
-    private LocalDateTime ativadoEm;
+    private Instant ativadoEm;
 
-    private LocalDateTime primeiroAcessoEm;
+    private Instant primeiroAcessoEm;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cargo_id", nullable = false)
