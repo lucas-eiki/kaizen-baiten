@@ -26,7 +26,7 @@ public class AuthService {
         try {
             var usuario = autenticarUsuario(request);
 
-            var dadosToken = criarDadosToken(usuario);
+            var dadosToken = criarDadosTokenJwt(usuario);
 
             String token = jwtService.gerarToken(dadosToken);
 
@@ -55,7 +55,7 @@ public class AuthService {
         return usuario;
     }
 
-    private DadosToken criarDadosToken(Usuario usuario) {
+    private DadosToken criarDadosTokenJwt(Usuario usuario) {
         var permissoes = usuario.getCargo()
                 .getPermissoes()
                 .stream()
