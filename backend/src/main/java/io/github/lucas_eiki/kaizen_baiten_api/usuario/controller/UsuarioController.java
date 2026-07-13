@@ -5,6 +5,7 @@ import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioResponse;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,6 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioResponse> criarUsuario(@RequestBody @Valid CriarUsuarioRequest request) {
         UsuarioResponse response = usuarioService.criarUsuario(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
