@@ -46,4 +46,6 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo cargo;
+
+    private String imagemPerfilPath;
 }
