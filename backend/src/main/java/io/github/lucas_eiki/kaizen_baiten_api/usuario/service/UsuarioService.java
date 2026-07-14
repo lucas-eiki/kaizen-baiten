@@ -4,7 +4,9 @@ import io.github.lucas_eiki.kaizen_baiten_api.auth.model.TipoToken;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.service.EmailService;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.service.TokenService;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.CriarUsuarioRequest;
+import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioEdicaoResponse;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioResponse;
+import io.github.lucas_eiki.kaizen_baiten_api.usuario.exception.UsuarioNaoEncontradoException;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.model.StatusUsuario;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.model.Usuario;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.repository.UsuarioRepository;
@@ -58,5 +60,17 @@ public class UsuarioService {
                         usuario.getCargo().getNome(),
                         usuario.getImagemPerfilPath()
                 ));
+    }
+
+    public UsuarioEdicaoResponse buscar(Long id) {
+        return usuarioRepository.findById(id)
+                .map(usuario -> new UsuarioEdicaoResponse(
+                        usuario.getId(),
+                        usuario.getNome(),
+                        usuario.getEmail(),
+                        usuario.getCargo().getId(),
+                        usuario.getImagemPerfilPath()
+                ))
+                .orElseThrow(() -> new UsuarioNaoEncontradoException(id));
     }
 }
