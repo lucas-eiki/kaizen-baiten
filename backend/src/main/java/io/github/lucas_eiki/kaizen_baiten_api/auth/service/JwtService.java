@@ -1,6 +1,6 @@
 package io.github.lucas_eiki.kaizen_baiten_api.auth.service;
 
-import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.DadosToken;
+import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.DadosTokenJwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -15,7 +15,7 @@ public class JwtService {
 
     private final JwtEncoder jwtEncoder;
 
-    public String gerarToken(DadosToken dados) {
+    public String gerarToken(DadosTokenJwt dados) {
 
         var agora = Instant.now();
         var expiraEmSegundos = 12L * 60 * 60;

@@ -1,6 +1,6 @@
 package io.github.lucas_eiki.kaizen_baiten_api.auth.service;
 
-import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.DadosToken;
+import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.DadosTokenJwt;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.LoginRequest;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.LoginResponse;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.ContaDesativadaException;
@@ -26,9 +26,9 @@ public class AuthService {
         try {
             var usuario = autenticarUsuario(request);
 
-            var dadosToken = criarDadosTokenJwt(usuario);
+            var dadosTokenJwt = criarDadosTokenJwt(usuario);
 
-            String token = jwtService.gerarToken(dadosToken);
+            String token = jwtService.gerarToken(dadosTokenJwt);
 
             return new LoginResponse(token);
         } catch (ContaNaoAtivadaException | ContaDesativadaException e) {
@@ -55,13 +55,13 @@ public class AuthService {
         return usuario;
     }
 
-    private DadosToken criarDadosTokenJwt(Usuario usuario) {
+    private DadosTokenJwt criarDadosTokenJwt(Usuario usuario) {
         var permissoes = usuario.getCargo()
                 .getPermissoes()
                 .stream()
                 .map(cargoPermissao -> cargoPermissao.getPermissao().getNome())
                 .toList();
 
-        return new DadosToken(usuario.getId(), permissoes);
+        return new DadosTokenJwt(usuario.getId(), permissoes);
     }
 }
