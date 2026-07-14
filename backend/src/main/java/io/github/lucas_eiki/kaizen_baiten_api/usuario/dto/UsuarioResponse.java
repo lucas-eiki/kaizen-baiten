@@ -1,15 +1,13 @@
 package io.github.lucas_eiki.kaizen_baiten_api.usuario.dto;
 
-import io.github.lucas_eiki.kaizen_baiten_api.cargo.model.Cargo;
-
-import java.time.Instant;
+import io.github.lucas_eiki.kaizen_baiten_api.usuario.model.StatusUsuario;
 
 public record UsuarioResponse(
         Long id,
         String nome,
         String email,
-        Instant deletado_em,
-        Instant ativado_em,
-        Cargo cargo
+        StatusUsuario status,
+        String cargoNome,
+        String imagemPerfilPath
 ) {
 }
