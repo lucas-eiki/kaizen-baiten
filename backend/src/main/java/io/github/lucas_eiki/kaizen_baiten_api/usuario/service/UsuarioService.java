@@ -5,10 +5,13 @@ import io.github.lucas_eiki.kaizen_baiten_api.auth.service.EmailService;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.service.TokenService;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.CriarUsuarioRequest;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioResponse;
+import io.github.lucas_eiki.kaizen_baiten_api.usuario.model.StatusUsuario;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.model.Usuario;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.repository.UsuarioRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,9 +42,21 @@ public class UsuarioService {
                 usuarioSalvo.getId(),
                 usuarioSalvo.getNome(),
                 usuarioSalvo.getEmail(),
-                usuarioSalvo.getDeletadoEm(),
-                usuarioSalvo.getAtivadoEm(),
-                usuarioSalvo.getCargo()
+                StatusUsuario.from(usuario),
+                usuario.getCargo().getNome(),
+                null
         );
+    }
+
+    public Page<UsuarioResponse> listar(Pageable pageable) {
+        return usuarioRepository.findAll(pageable)
+                .map(usuario -> new UsuarioResponse(
+                        usuario.getId(),
+                        usuario.getNome(),
+                        usuario.getEmail(),
+                        StatusUsuario.from(usuario),
+                        usuario.getCargo().getNome(),
+                        usuario.getImagemPerfilPath()
+                ));
     }
 }
