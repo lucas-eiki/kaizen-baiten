@@ -14,6 +14,6 @@ public record CriarUsuarioRequest(
         String email,
 
         @NotNull
-        Cargo cargo
+        Long cargoId
 ) {
 }

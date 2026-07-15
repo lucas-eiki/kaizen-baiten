@@ -32,29 +32,36 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
     private final TokenService tokenService;
-    private final EmailService emailService;
     private final ApplicationEventPublisher eventPublisher;
 
+    @Transactional
     public UsuarioResponse criarUsuario(CriarUsuarioRequest request) {
+        if (usuarioRepository.existsByEmail(request.email())) {
+            throw new EmailJaCadastradoException("O e-mail informado já está cadastrado.");
+        }
+        var cargo = cargoRepository.findById(request.cargoId())
+                .orElseThrow(() -> new CargoNaoEncontradoException(request.cargoId()));
+
         var usuario = new Usuario();
         usuario.setNome(request.nome());
         usuario.setEmail(request.email());
-        usuario.setCargo(request.cargo());
+        usuario.setCargo(cargo);
 
-        Usuario usuarioSalvo = usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
 
-        String tokenGerado = tokenService.criarToken(usuarioSalvo, TipoToken.ATIVACAO_CONTA);
+        String token = tokenService.criarToken(usuario, TipoToken.ATIVACAO_CONTA);
 
-        try {
-            emailService.enviarAtivacaoConta(usuarioSalvo.getNome(), usuario.getEmail(), tokenGerado);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Erro ao enviar email de ativação de conta", e);
-        }
+        eventPublisher.publishEvent(
+                new AtivacaoContaSolicitadaEvent(
+                        usuario.getNome(),
+                        usuario.getEmail(),
+                        token)
+        );
 
         return new UsuarioResponse(
-                usuarioSalvo.getId(),
-                usuarioSalvo.getNome(),
-                usuarioSalvo.getEmail(),
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
                 StatusUsuario.from(usuario),
                 usuario.getCargo().getNome(),
                 null
