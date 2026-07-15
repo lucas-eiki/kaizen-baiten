@@ -1,6 +1,7 @@
 package io.github.lucas_eiki.kaizen_baiten_api.usuario.controller;
 
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.CriarUsuarioRequest;
+import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioEdicaoRequest;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioEdicaoResponse;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioResponse;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.service.UsuarioService;
@@ -35,6 +36,12 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioEdicaoResponse> buscar(@PathVariable Long id) {
         UsuarioEdicaoResponse response = usuarioService.buscar(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioEdicaoResponse> atualizar(@PathVariable Long id, @RequestBody UsuarioEdicaoRequest request) {
+        UsuarioEdicaoResponse response = usuarioService.atualizar(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

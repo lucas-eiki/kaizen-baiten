@@ -47,7 +47,6 @@ public class TokenService {
 
     private String gerarHash(String token) {
         try {
-
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
             byte[] hash = messageDigest.digest(token.getBytes(StandardCharsets.UTF_8));
@@ -56,5 +55,13 @@ public class TokenService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void desativarTokenPorUsuario(Long idUsuario) {
+        var tokens = tokenRepository.findByUsuarioIdAndTipoAndUtilizadoEmIsNullAndExpiraEmAfter(idUsuario, TipoToken.ATIVACAO_CONTA, Instant.now());
+
+        tokens.forEach(token -> token.setUtilizadoEm(Instant.now()));
+
+        tokenRepository.saveAll(tokens);
     }
 }
