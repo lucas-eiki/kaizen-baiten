@@ -13,4 +13,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
             TipoToken tipo,
             Instant agora
     );
+
+    void deleteAllByUsuarioId(Long id);
 }

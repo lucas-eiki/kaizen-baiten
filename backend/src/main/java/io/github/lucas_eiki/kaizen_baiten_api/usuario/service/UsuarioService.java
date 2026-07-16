@@ -2,11 +2,17 @@ package io.github.lucas_eiki.kaizen_baiten_api.usuario.service;
 
 import io.github.lucas_eiki.kaizen_baiten_api.auth.event.AtivacaoContaSolicitadaEvent;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.model.TipoToken;
+import io.github.lucas_eiki.kaizen_baiten_api.auth.repository.TokenRepository;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.service.EmailService;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.service.TokenService;
 import io.github.lucas_eiki.kaizen_baiten_api.cargo.exception.CargoNaoEncontradoException;
 import io.github.lucas_eiki.kaizen_baiten_api.cargo.repository.CargoRepository;
 import io.github.lucas_eiki.kaizen_baiten_api.common.exception.OperacaoNaoPermitidaException;
+import io.github.lucas_eiki.kaizen_baiten_api.fiado.repository.FiadoRepositoy;
+import io.github.lucas_eiki.kaizen_baiten_api.fiado.repository.MovimentacaoFiadoRepository;
+import io.github.lucas_eiki.kaizen_baiten_api.log.model.Acao;
+import io.github.lucas_eiki.kaizen_baiten_api.log.repository.LogRepository;
+import io.github.lucas_eiki.kaizen_baiten_api.pedido.repository.PedidoRepository;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.CriarUsuarioRequest;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioEdicaoRequest;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.dto.UsuarioEdicaoResponse;
@@ -25,12 +31,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
+    private final PedidoRepository pedidoRepository;
+    private final FiadoRepositoy fiadoRepositoy;
+    private final MovimentacaoFiadoRepository movimentacaoFiadoRepository;
+    private final LogRepository logRepository;
+    private final TokenRepository tokenRepository;
     private final TokenService tokenService;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -146,5 +160,28 @@ public class UsuarioService {
         }
 
         return false;
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        var usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNaoEncontradoException(id));
+
+        if (usuarioEstaEmUso(id)) {
+            usuario.setDeletadoEm(Instant.now());
+        } else {
+            tokenRepository.deleteAllByUsuarioId(id);
+            logRepository.deleteAllByUsuarioId(id);
+            usuarioRepository.deleteById(id);
+        }
+
+    }
+
+    private boolean usuarioEstaEmUso(Long id) {
+        return pedidoRepository.existsByUsuarioId(id) ||
+                fiadoRepositoy.existsByUsuarioId(id) ||
+                movimentacaoFiadoRepository.existsByUsuarioId(id) ||
+                logRepository.existsByUsuarioIdAndAcaoNotIn(id,
+                        List.of(Acao.LOGIN, Acao.LOGIN_FAILED, Acao.LOGOUT));
     }
 }

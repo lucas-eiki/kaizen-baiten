@@ -44,4 +44,10 @@ public class UsuarioController {
         UsuarioEdicaoResponse response = usuarioService.atualizar(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        usuarioService.deletar(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
