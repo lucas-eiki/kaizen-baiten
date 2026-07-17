@@ -31,7 +31,7 @@ public class EmailService {
                     Sua conta foi criada com sucesso. Para concluir seu cadastro e ativar sua conta,
                     defina sua senha clicando no botão abaixo:
                 </p>
-                <a href="http://dns/ativar?token=%s">
+                <a href="http://localhost:8080/auth/ativacao?token=%s">
                     Ative sua conta
                 </a>
                 <p>

@@ -45,7 +45,7 @@ public class TokenService {
                 .encodeToString(bytes);
     }
 
-    private String gerarHash(String token) {
+    public String gerarHash(String token) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 

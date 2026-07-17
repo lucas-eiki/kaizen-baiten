@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token, Long> {
     List<Token> findByUsuarioIdAndTipoAndUtilizadoEmIsNullAndExpiraEmAfter(
@@ -15,4 +16,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     );
 
     void deleteAllByUsuarioId(Long id);
+
+    Optional<Token> findByTokenHash(String tokenHash);
 }
