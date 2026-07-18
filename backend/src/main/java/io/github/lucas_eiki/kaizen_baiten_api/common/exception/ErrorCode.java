@@ -1,0 +1,27 @@
+package io.github.lucas_eiki.kaizen_baiten_api.common.exception;
+
+public enum ErrorCode {
+    CONTA_JA_ATIVADA,
+    CONTA_NAO_ATIVADA,
+
+    TOKEN_INVALIDO,
+    TOKEN_NAO_ENCONTRADO,
+
+    CARGO_NAO_ENCONTRADO,
+
+    OPERACAO_NAO_PERMITIDA,
+
+    EMAIL_JA_CADASTRADO,
+
+    USUARIO_INATIVO,
+    USUARIO_NAO_ENCONTRADO,
+
+    CAMPOS_INVALIDOS,
+
+    CREDENCIAIS_INVALIDAS,
+
+    ERRO_INTERNO,
+    NAO_AUTENTICADO,
+    ACESSO_NEGADO,
+    TOKEN_JWT_EXPIRADO
+}
