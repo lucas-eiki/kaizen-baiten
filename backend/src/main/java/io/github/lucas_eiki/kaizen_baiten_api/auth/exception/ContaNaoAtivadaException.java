@@ -1,7 +1,15 @@
 package io.github.lucas_eiki.kaizen_baiten_api.auth.exception;
 
-public class ContaNaoAtivadaException extends RuntimeException {
+import io.github.lucas_eiki.kaizen_baiten_api.common.exception.BusinessException;
+import io.github.lucas_eiki.kaizen_baiten_api.common.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
+
+public class ContaNaoAtivadaException extends BusinessException {
     public ContaNaoAtivadaException() {
-        super("Conta não ativada.");
+        super(
+                HttpStatus.CONFLICT,
+                ErrorCode.CONTA_NAO_ATIVADA,
+                "Conta não ativada."
+        );
     }
 }

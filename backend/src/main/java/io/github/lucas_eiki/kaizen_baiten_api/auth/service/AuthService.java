@@ -1,13 +1,13 @@
 package io.github.lucas_eiki.kaizen_baiten_api.auth.service;
 
 import io.github.lucas_eiki.kaizen_baiten_api.auth.dto.*;
-import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.ContaDesativadaException;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.ContaNaoAtivadaException;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.TokenInvalidoException;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.TokenNaoEncontradoException;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.model.Token;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.repository.TokenRepository;
 import io.github.lucas_eiki.kaizen_baiten_api.auth.exception.ContaJaAtivadaException;
+import io.github.lucas_eiki.kaizen_baiten_api.usuario.exception.UsuarioInativoException;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.exception.UsuarioNaoEncontradoException;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.model.Usuario;
 import io.github.lucas_eiki.kaizen_baiten_api.usuario.repository.UsuarioRepository;
@@ -39,7 +39,7 @@ public class AuthService {
             String token = jwtService.gerarToken(dadosTokenJwt);
 
             return new LoginResponse(token);
-        } catch (ContaNaoAtivadaException | ContaDesativadaException e) {
+        } catch (ContaNaoAtivadaException | UsuarioInativoException e) {
             throw new BadCredentialsException("Usuário ou senha inválidos", e);
         }
     }
@@ -52,12 +52,12 @@ public class AuthService {
             throw new BadCredentialsException("Usuário ou senha inválidos");
         }
 
-        if (usuario.getSenhaHash() == null || usuario.getAtivadoEm() == null) {
+        if (usuario.getAtivadoEm() == null) {
             throw new ContaNaoAtivadaException();
         }
 
         if (usuario.getDeletadoEm() != null) {
-            throw new ContaDesativadaException();
+            throw new UsuarioInativoException(usuario.getId());
         }
 
         return usuario;
@@ -89,12 +89,12 @@ public class AuthService {
     @Transactional
     public void ativarConta(CriarSenhaRequest request) {
         var token = tokenRepository.findByTokenHash(tokenService.gerarHash(request.token()))
-                .orElseThrow(() -> new TokenNaoEncontradoException("Token não encontrado"));
+                .orElseThrow(TokenNaoEncontradoException::new);
 
         var agora = Instant.now();
 
         if (!isTokenValido(token, agora)) {
-            throw new TokenInvalidoException("Token inválido");
+            throw new TokenInvalidoException();
         }
 
         var usuario = usuarioRepository.findById(token.getUsuario().getId())

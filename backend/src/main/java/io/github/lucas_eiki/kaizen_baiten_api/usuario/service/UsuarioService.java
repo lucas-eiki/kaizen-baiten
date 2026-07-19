@@ -51,7 +51,7 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse criarUsuario(CriarUsuarioRequest request) {
         if (usuarioRepository.existsByEmail(request.email())) {
-            throw new EmailJaCadastradoException("O e-mail informado já está cadastrado.");
+            throw new EmailJaCadastradoException();
         }
         var cargo = cargoRepository.findById(request.cargoId())
                 .orElseThrow(() -> new CargoNaoEncontradoException(request.cargoId()));
@@ -152,7 +152,7 @@ public class UsuarioService {
             }
 
             if (usuarioRepository.existsByEmail(request.email())) {
-                throw new EmailJaCadastradoException("O e-mail informado já está cadastrado.");
+                throw new EmailJaCadastradoException();
             }
 
             usuario.setEmail(request.email());
